@@ -102,7 +102,7 @@ for noise_Delta = [0 5 10]
                     Data = ['codebook_y_1_' num2str(y_1)] ;
                     load (Data) ;
                 end
-                % The first step of the ACOSQ described in Section 4.1 and
+                % The second step of the ACOSQ described in Section 4.1 and
                 % Algorithm 4. In this step a 2-bit COSQ is designed for the conditional source pdf f_u_given_y_1
                 % as computed in line 85.
                 [SDR_2 , D_2(y_1) , hold_T , codebook] = COSQ_2(f_u_given_y_1 , y_1 , Pr_z , T(: , 1 : 2) , codebook , delta ) ;
