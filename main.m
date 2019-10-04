@@ -79,7 +79,7 @@ for noise_Delta = [0 5 10]
         fprintf (FileID , '\nrate = 1\n') ;
         %% COSQ for bit 2 (step 2)
         for y_1 = 1 : 2
-            % Based on (4.2) in the Thesis compute the source conditional pdf given the received
+            % Based on (4.8) in the Thesis compute the source conditional pdf given the received
             % sequence y_1 where y_1 is the channel output corresponding to
             % the transmitted sequence in the first step.
             [f_u_given_y_1] = generate_pdf_step_2(y_1 , T , Pr_1 , f , delta ) ;
@@ -89,8 +89,7 @@ for noise_Delta = [0 5 10]
                 Pr_z = [(1 - epsilon(i) + noise_Delta) / (1 + noise_Delta)  , epsilon(i) / (1 + noise_Delta) ;
                     (1 - epsilon(i)) / (1 + noise_Delta)  , (epsilon(i) + noise_Delta) / (1 + noise_Delta)] ;
                 
-                Pr_1 = [1 - epsilon(i) , epsilon(i) ;
-                    epsilon(i) , 1 - epsilon(i)] ;
+              
                 
                 if (inner_noise == 1)
                     % Find the initial codebook for the conditional source
@@ -133,8 +132,8 @@ for noise_Delta = [0 5 10]
                     y_1_2_3 = (y_1 - 1) * 4 + (y_2 - 1) * 2 + y_3  ;
                     
                     [f_u_given_y_1] = generate_pdf_step_2(y_1 , T , Pr_1 , f , delta ) ;
-                    % According to (4.4) compute the conditional pdf given the received sequence
-                    % y_1y_2 where y_2 is the corresponding channel output for
+                    % According to (4.8) compute the conditional pdf given the received sequence
+                    % y_1y_2y_3 where y_2y_3 is the corresponding channel output for
                     % the sequence transmitted in the second step.
                     [f_u_given_y_1_y_2_y_3] = generate_pdf_step_3(Pr_z , f_u_given_y_1 , T , y_1 , y_2 , y_3 , delta) ;
                     for inner_noise = 1 : k
@@ -142,8 +141,7 @@ for noise_Delta = [0 5 10]
                         Pr_z = [(1 - epsilon(i) + noise_Delta) / (1 + noise_Delta)  , epsilon(i) / (1 + noise_Delta) ;
                             (1 - epsilon(i)) / (1 + noise_Delta)  , (epsilon(i) + noise_Delta) / (1 + noise_Delta)] ;
                         
-                        Pr_1 = [1 - epsilon(i) , epsilon(i) ;
-                            epsilon(i) , 1 - epsilon(i)] ;
+                        
                         if (inner_noise == 1)
                             % Find the initial codebook for the conditional source
                             % pdf using splitting algorithm.
@@ -154,7 +152,7 @@ for noise_Delta = [0 5 10]
                         end
                         % The last step of the ACOSQ described in Section 4.1 and
                         % Algorithm 4. In this step a 1-bit COSQ is designed for the conditional source pdf f_u_given_y_1_y_2_y_3
-                        % as computed in line 139.
+                        % as computed in line 138.
                         [SDR_4(k) , D_4(y_1_2_3) , hold_T , codebook] = COSQ_4(f_u_given_y_1_y_2_y_3 , y_1 , y_2 , y_3 , Pr_z , T(: , 1 : 4) , codebook , delta ) ;
                     end
                     codebook_4 = [codebook_4 ; codebook ] ;
@@ -207,6 +205,7 @@ for noise_Delta = [0 5 10]
         fprintf (FileID , '\nD = %f' , D_4(i)) ;
         fprintf (FileID , '\nSDR_4 = %7.4f\n' , final_SDR_4(i)) ;
     end
+    % Store the ultimate SDR values for the given channel parameters 
     Data = ['ACOSQ_1_2_1_delta_' num2str(noise_Delta)] ;
     save (Data , 'final_SDR_4' , 'Final_SDR_4' , 'final_SDR_2' , 'Final_SDR_2' , 'epsilon') ;
     clear D_4 D_2;
